@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cambiar Contraseña</title>
+  <style>
+    body {
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      width: 300px;
+      padding: 20px;
+      border: 1px solid white;
+      border-radius: 10px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid white;
+      background: transparent;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #3D84BA;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2b6790;
+    }
+    #message {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Cambiar Contraseña</h2>
+    <form id="resetForm">
+      <input type="password" id="password" placeholder="Nueva contraseña" required />
+      <input type="password" id="confirm" placeholder="Confirmar contraseña" required />
+      <button type="submit">Guardar</button>
+    </form>
+    <p id="message"></p>
+  </div>
+
+  <!-- Cargar supabase desde CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // 🔹 Reemplaza con tu URL y clave pública de Supabase
+    const SUPABASE_URL = "https://vlmumyosvxmmmfflklwk.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsbXVteW9zdnhtbW1mZmxrbHdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ3NzY1NDAsImV4cCI6MjA3MDM1MjU0MH0._juuIBUJBvWshWIAiLC_Ixc0PkOV9anP2mx9wR1eDhQ";
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById("resetForm");
+    const message = document.getElementById("message");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const password = document.getElementById("password").value;
+      const confirm = document.getElementById("confirm").value;
+
+      if (password !== confirm) {
+        message.textContent = "❌ Las contraseñas no coinciden";
+        return;
+      }
+
+      const { data, error } = await supabase.auth.updateUser({ password });
+
+      if (error) {
+        message.textContent = "❌ Error: " + error.message;
+      } else {
+        message.textContent = "✅ ¡Contraseña actualizada con éxito!";
+      }
+    });
+  </script>
+</body>
+</html>
